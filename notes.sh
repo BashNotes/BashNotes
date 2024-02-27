@@ -1,33 +1,42 @@
 #!/bin/bash -e
 
-#-#-#-#-#-#-# INTRODUCTION  #-#-#-#-#-#-#
-#-# A simple program for creating notes 
-#-# in vim or its forks.
-#-# 
-#-# Usage:
-#-#    ./notes.sh [NOTES_DIR]
+
+#-#-#-#-#-#-#-# USAGE #-#-#-#-#-#-#-#-#-#
+function usage {
+   echo "\
+#-#   A simple program for creating notes 
+#-#   in vim or its forks.
+#-#
+#-#   Usage:
+#-#      ./notes.sh NOTES_DIR
+#-#"
+}
 
 #-#-#-#-#-#  DEBUG SYMBOLS  #-#-#-#-#-#-#
+#-# 
 # * Disable *
 #!/bin/bash -e
 # * Enable *
 #!/bin/bash -ex
 
 #-#-#-#-#-#-#  CLOCK FIX  #-#-#-#-#-#-#-#
+#-# 
 # Fix clock drift in WSL
 sudo hwclock -s
 
 #-#-#-#-#-#- NOTES DIRECTORY  #-#-#-#-#-#
+#-# 
 #-#  If directory argument was provided
 #-#     Use provided directory as notes dir
 #-#  If notes directory exists yet
 #-#     Make new notes directory
 #-#  Print directory being used
 #-#       
-export notes_dir=default_notes
-optional_notes_dir=$1
-if [ -n $optional_notes_dir ]; then
-   notes_dir=$optional_notes_dir
+export notes_dir=$1
+if [ $# -eq 0 ]; then
+   usage
+   exit
+   # export notes_dir="default_notes"
 fi
 
 if [ ! -d $notes_dir ]; then
@@ -38,6 +47,7 @@ fi
 echo "Using \""$notes_dir"\" as the notes directory."
 
 #-#-#-#-#-# CURRENT NOTES FILE  #-#-#-#-#
+#-# 
 #-# If current notes don't already exist
 #-#    Get the latest note entry
 #-#    If there is no latest note entry
@@ -59,7 +69,7 @@ fi
 
 export previous_filename=$(ls -rv $notes_dir | grep -m 2 "txt" | tail -n 1) # Most recent note entry before today
 if [ -z $previous_filename ]; then
-   previous_filename=$current_filename
+   export previous_filename=$current_filename
 fi
 
 # Make all files except current notes read-only
@@ -72,6 +82,6 @@ nvim -S open_notes.vim &
 
 # Check if it's a new day every 10 seconds
 while [[ -a $notes_dir/$current_filename ]]; do
-   current_filename=$(date -I)_$(date +%a).txt
+   export current_filename=$(date -I)_$(date +%a).txt
    sleep 10
 done
