@@ -12,6 +12,33 @@ function usage {
 #-#"
 }
 
+#-#-#-#-#-#-# OPEN NOTES #-#-#-#-#-#-#-#-#
+#-#
+#-# By default, open current notes in neovim.
+#-# First tab is current notes.
+#-# Second tab is a diff of previous and current notes.
+#-#
+#-# This function can be modified to open $current_filename in any editor.
+#-# Example:
+#-#    function open_notes {
+#-#       gedit $current_filename
+#-#    }
+#-#
+function open_notes {
+   nvim -c "\
+   cd $notes_dir
+
+   set nonumber norelativenumber
+   colorscheme peachpuff
+
+   edit $current_filename
+
+   tab split $previous_filename
+   vert diffsplit $current_filename
+   tabnext 1
+   "
+}
+
 #-#-#-#-#-#  DEBUG SYMBOLS  #-#-#-#-#-#-#
 #-# 
 # * Disable *
@@ -32,11 +59,11 @@ sudo hwclock -s
 #-#     Make new notes directory
 #-#  Print directory being used
 #-#       
-export notes_dir=$1
+notes_dir=$1
 if [ $# -eq 0 ]; then
    usage
    exit
-   # export notes_dir="default_notes"
+   # notes_dir="default_notes"
 fi
 
 if [ ! -d $notes_dir ]; then
@@ -55,33 +82,31 @@ echo "Using \""$notes_dir"\" as the notes directory."
 #-#    Else (If there is a latest note entry)
 #-#       Copy the latest note entry to the current notes
 #-#       
-export current_filename=$(date -I)_$(date +%a).txt
+current_filename=$(date -I)_$(date +%a).txt
 
 if [[ ! -a $notes_dir/$current_filename ]]; then
    latest_filename=$(ls -rv $notes_dir | head -n 1)
    if [ -z $latest_filename ]; then
-      echo  "Creating new filee: " $notes_dir/$current_filename "..."
+      echo  "Creating new notes file: " $notes_dir/$current_filename "..."
       touch $notes_dir/$current_filename
    else 
       cp $notes_dir/$latest_filename $notes_dir/$current_filename
    fi
 fi
 
-export previous_filename=$(ls -rv $notes_dir | grep -m 2 "txt" | tail -n 1) # Most recent note entry before today
+previous_filename=$(ls -rv $notes_dir | grep -m 2 "txt" | tail -n 1) # Most recent note entry before today
 if [ -z $previous_filename ]; then
-   export previous_filename=$current_filename
+   previous_filename=$current_filename
 fi
 
 # Make all files except current notes read-only
 chmod a-w $notes_dir/*
 chmod a+w $notes_dir/$current_filename
 
-# Open current notes in neovim, second tab diffs against previous notes
-# Uses $notes_dir, $current_filename, and $previous_filename
-nvim -S open_notes.vim &
+open_notes &
 
 # Check if it's a new day every 10 seconds
 while [[ -a $notes_dir/$current_filename ]]; do
-   export current_filename=$(date -I)_$(date +%a).txt
+   current_filename=$(date -I)_$(date +%a).txt
    sleep 10
 done
