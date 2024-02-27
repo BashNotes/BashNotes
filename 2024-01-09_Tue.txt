@@ -1,0 +1,37 @@
+TODO:
+   - Performance self-review (Due 1/17)
+   - Udemy Embedded Software Design Patterns
+   - SDK studying
+
+IN PROGRESS:
+   - Deneb docs
+      - Power Supply Guidelines
+      - Deneb API Reference Manual
+      - Deneb Datasheet 1.2
+
+      - Deneb Startup Procedure.pdf
+
+DONE:
+   - Deneb docs
+      - DENEB_DSP_Rev1.0.pdf
+      - 100G_ZR_System_Test_Setup_V1.pptx
+         - Summarizes test platform for Zapata
+            - DSP, COSA, Laser
+         - Baseline Performance Parameters, debug
+         - Setup summary
+            - COSA EVB
+               - Coherent Optical Subassembly Eval Board
+            - iTLA EVB
+               - Integrable Tunable Laser Assembly Eval Board
+            - ASIC EVB
+               - ASIC Eval Board
+               - Start with Deneb, then Zapata
+         - Phase 1: Build and Baseline
+            - Build reference setup, DSP+COSA+Laser
+         - Phase 2: Evaluate Components
+            - Evaluate COSA version 2
+            - Evaluate pTLA
+            - Evaluate Zapata
+      - MKR00052 Canpous EVK Quick Bring-up User Guide RevA_Effect_Photonics.pdf
+
+NOTES:

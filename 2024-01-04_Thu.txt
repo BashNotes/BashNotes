@@ -1,0 +1,13 @@
+TODO:
+   - Performance self-review (Due 1/17) (1/3:
+   - Udemy Embedded Software Design Patterns (12/19:
+   - SDK studying (12/19:
+
+IN PROGRESS:
+   - Read Deneb Startup Procedure.pdf (1/4: 1/4 -
+
+DONE:
+   - Udemy Makefile (12/19: 1/4 - 1/4, 1)
+
+NOTES:
+

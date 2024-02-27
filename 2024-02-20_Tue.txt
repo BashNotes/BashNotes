@@ -1,0 +1,149 @@
+---------------------------------- IN PROGRESS ----------------------------------
+- Deneb Board Bringup
+   - https://teams.microsoft.com/l/message/19:bc967ba2141943ae950a6cb1983e76f7@thread.tacv2/1707935415145?tenantId=7cae46a2-5dda-47a1-ad0c-666d0aead08c&groupId=5cca5a59-d8f6-45d1-a58d-f674eb2e3503&parentMessageId=1707935415145&teamName=Zapata&channelName=FW%20(SDK)&createdTime=1707935415145
+   - high*Bandwidth12
+   - Read the Canopus EVK Quick Bring-up start to finish, see if I can run the python startup script for 100G ZR, which is mode_100G_QPSK_30_1b_47.py
+   - I'll update the instructions here for connecting to the board, running the startup script, configuring for internal loopback, monitoring, etc.
+
+   - ssh root@192.168.145.183
+      - What is the root password?
+      - canopus_leopard, deneb_eval don't work
+
+   - ClevelandLab python project
+      - start_100G_ZR_internal_loopback.py
+      - set_vdd function missing
+      - GetIngressSmState stuck in 4, sometimes 1
+
+
+------------------------------------- TODO --------------------------------------
+- Set up Global Protect VPN
+   - Respond to Jesse van Asselt if needed
+
+- Read ARM documentation
+   - https://developer.arm.com/documentation/ddi0194/h?lang=en
+
+- Zapata API definitions:
+   - Update the RX1 definitions with details on whether they are intended to be used by the user or developer, in a new column.
+   - Group the config and status API calls by function.
+   - All of the individual DscSet... calls go under the single DscSetConfig API call (same with the DscGet calls under DscGetConfig).
+   - In the end, maybe have Set and Get calls for Adc, Dsc, Agc, and Cdmf and another similar set for the get status of those functions
+
+- Programmer's Guide:
+   - Complete the Programmer's Guide for the RX1 modules, including details about the User API calls.
+      - ADC CAL
+         - Deferred until we discuss the status of these modules
+         - See thread in zpt_rx1
+      - DSC
+         - Resampler
+         - Phase Imbalance
+         - Gain Imbalance
+         - IQ Correction
+         - Dynamic Skew Estimator
+      - CAR
+      - Digital AGC
+      - CDMF
+
+- User's Guide:
+   - Update the User's Guide for the RX1 modules, which should be a subset of the Programmer's Guide, so should just be some copy and pasting.
+
+- Task 10: Bring up Deneb eval board and verify configuration and operation for 100G ZR mode via GUI
+   - Confirm startup script: startup_py_v1p8p3/mode_100G_QPSK_30_1b_47.py
+
+- Read OpenRISC thesis
+
+- Udemy Embedded Software Design Patterns
+- Read Polarization Mode Dispersion book
+- SDK studying
+
+------------------------------------- DONE --------------------------------------
+- Improve notes formatting
+
+------------------------------------- NOTES -------------------------------------
+SDK/API Team Meeting @ 2024-02-14, 11:00
+- Pivoting from Credo work, work on Programmer's Guide
+- Get questions answered about modules, registers, etc
+- Provide pseudocode such that BSS could write it
+- No ADC/DAC CAL needed going forward, easier SERDES bringup
+- Need FW framework from Broadcom
+- SPI bus for comms between MCU and chip
+
+DSP Program - Q&A @ 2024-02-20, 10:00
+- Open discussion on how we do 100G going forward
+- Roberto: Credo path didn't go well, why did we pick Credo in the first place?
+   - In the beginning of Zapata, Nov 2022, restructuring, manufacturing strategy, market research
+   - Plot of Credo in Nov 2022, Credo doing well against peers
+      - Growth vs Return on Investment
+   - Picking Credo was the right choice, financially and from investor perspective
+   - Credo got hit hard in 2023, customer canceled large project
+   - We didn't know the behavior of the engineering team ahead of time
+   - Credo engineering team didn't have same buy-in as business team
+   - Partnership didn't turn out as expected
+   - We are in a different place today
+- Kyle: What if we went with Broadcom instead of Credo?
+   - Roberto: Broadcom is an ASIC company, more familiar with our work
+   - Would have been better, but not feasible at the time for financial reasons
+- Supply chain, building product team, etc is behind us
+- We are doing what we would have done if we could have afforded it in Nov 2022
+- Cost to buy chip from Broadcom vs Credo is less
+- DSP will have our name on it, not Credo's or Broadcom's
+- Roberto: How are we going to go do this?
+   - Russell: 1000 ft view, identical to what was before, keep it simple
+- Goals:
+   - ASIC in our hand in 2024 is important, final towards end of April
+   - August want to have chip finished
+- Jason: What if schedule pushes out to 2025?
+   - Roberto: Will tell us if things go sour
+   - Chip is solid, just needs changes to get to Broadcom
+   - Jason: Schedule, scope, cost. Choosing schedule ahead of all details. Are we flexible with cost?
+   - Our team needs to focus on schedule, Roberto can handle to cost
+   - Need to be realistic in terms of expectations, achievable goals
+   - We need to be honest with ourselves in order to be successful
+- Jason: We need more people in implementation, other teams, if we want to do things quick
+   - Need resources to meet these dates
+- Costs money to do Deneb, Durian DSP
+- Write things down, make block diagrams, be transparent
+
+- Suggestions on strategy from Kyle, informed from suggestions of others
+   - Keep it simple
+      - Document all changes needed, prefer no changes unless needed
+   - Proactive, not reactive
+      - Need expectations from the very beginning on ownership of tasks, EFFECT vs BSS vs Broadcom
+      - I prefer owning our own work over Broadcom, even if it takes longer on paper
+      - Do not reinvent the wheel
+         - Much better to utilize third-party products than building something from scratch
+         - Using ARM MCU instead of OpenRISC, for example
+      - No last minute or unexpected changes, should be known well ahead of time
+   - Clearly lay out what changes are needed at a high level
+      - Translate those into SYS/PV/DV/IMP/RTL tasks, with estimated time
+   - Lean towards worst case time estimates, informed from experience
+   - Utilize BSS, or hire more employees/contractors if needed, to meet long-term goals
+   - Clearly delineate tasks from which company down to which employee does what
+   - Need a project manager, full-time resource for intra and inter company communication, defining and managing tasks
+   - Need to plan schedule around worst-case or near worst-case estimates, so we can be confident that we meet the schedule
+   - August schedule needs to be realistic given our current resources
+      - If not realistic, we need more people
+      - Crunch is okay and expected, but needs to be on the order of days, not weeks or months
+      - More work for each person could just lead to burnout
+   - Audit our resources: SYS/PV/DV/IMP/RTL team, considering overlap of experience
+      - Do we have everyone that we need?
+      - Do we need more PV, IMP (referencing Jason), resources?
+   - Need to be attentive to schedule slip, communicate early, move resources around
+
+Town Hall @ 2024-02-20, 11:00
+- Funding
+   - Commitment for $38 million, signing has started
+   - Mid-late March time frame
+- Products
+   - Manufacturing is hands-off at this point
+   - Sent out samples to SFP to customer, testing went well
+      - 250 products shipped
+      - Working with value added retailer, could ship 10,000 units
+   - Pico Tunable Laser
+      - Took less than 4 weeks
+      - Leveraged same manufacturing processes
+      - First design, TOSA, used same manufacturing processes
+      - Will be demoed at OFC
+   - Will be integrating optical front end with Deneb, COSA
+- Credo is behind us, some legal things still need tied up
+
+Performance Review @ 2024-02-20, 13:00

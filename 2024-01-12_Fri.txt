@@ -1,0 +1,73 @@
+TODO:
+   - Performance self-review (Due 1/17)
+   - Udemy Embedded Software Design Patterns
+   - SDK studying
+
+IN PROGRESS:
+   - Add walkthrough of API and documents to Deneb Internal Getting Started Guide.docx
+
+DONE:
+   - Deneb docs
+      - DENEB_DSP_Rev1.0.pdf
+      - 100G_ZR_System_Test_Setup_V1.pptx
+         - Summarizes test platform for Zapata
+            - DSP, COSA, Laser
+         - Baseline Performance Parameters, debug
+         - Setup summary
+            - COSA EVB
+               - Coherent Optical Subassembly Eval Board
+            - iTLA EVB
+               - Integrable Tunable Laser Assembly Eval Board
+            - ASIC EVB
+               - ASIC Eval Board
+               - Start with Deneb, then Zapata
+         - Phase 1: Build and Baseline
+            - Build reference setup, DSP+COSA+Laser
+         - Phase 2: Evaluate Components
+            - Evaluate COSA version 2
+            - Evaluate pTLA
+            - Evaluate Zapata
+      - MKR00052 Canpous EVK Quick Bring-up User Guide RevA_Effect_Photonics.pdf
+      - Power Supply Guidelines
+      - SDK Kickoff Presentation
+      - Deneb API Reference Manual
+      - Deneb Datasheet 1.2
+         - 1.0 Overview
+         - 2.0 Introduction
+         - 5.0 - 5.7 Serial Peripheral Interface
+         - 6.0 Embedded Microprocessor
+      - Deneb Startup Procedure.pdf
+         - Focus on Ref 1 Mode 13 ID 1: 100G dQPSK, Staircase
+            - startup_py_v1p27p0p0/mode_100G_dQPSK_1_13_1.py
+
+Zapata SDK/API Kickoff @ 10:30am:
+   - Team member introduction
+   - John Sutherland will be a "customer" of SDK
+   - Want to develop a familiar/industry standard SDK/API for Zapata
+   - Have Marvel Deneb EVK and FW as a reference
+   - Zapata, stripped down somewhat from Deneb
+   - Want to develop SDK to use Orion module, which will use Deneb chip
+   - Allow for Orion to use Zapata
+   - Want top layer, customer-facing layer, to be the same between Deneb and Zapata
+   - Lower layers will of course have different functionality between the two
+   - Want to better understand the structure of the Deneb EVK, layers of FW and microcontrollers
+   - Credo says tapeout around April, planning on having things ready around June
+   - SPI interface between external MCU and Deneb chip
+   - Want to define subset of Deneb API commands that would be needed for Orion, Zapata
+   - Jihad is a proponent for emulating FW and interfacing with Zapata simulation
+   - Evaluate long lead time items, short and long term steps, schedule
+   - Start assigning tasks to individuals
+   - Start creating our own API reference document, starting with a skeleton
+
+NOTES:
+- Zapata vs Deneb Comparison
+   - Zapata
+      - Controlled through APB Interface to read and write ACT registers
+   - Deneb w/ MCU
+      - Controlled through SPI Interface
+      - Message based, with header and payload
+      - Without FW, can read and write registers via SPI
+      - With FW, can send high level commands to perform more complex operations
+      - User creates message to send to Deneb FW, FW performs the operation based on the message
+      - We do not have the firmware source code, only the binaries
+      - C and Python code provided creates and sends the messages to FW

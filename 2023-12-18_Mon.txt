@@ -1,0 +1,34 @@
+TODO:
+   - Expensify tuition reimbursement
+   - SDK studying
+
+IN PROGRESS:
+
+DONE:
+   - Request time off
+   - CD Search Test 12-15 Results, cdEstError = stepSize/2
+   - op_mode = 1
+      - OSNR = 16.0
+      - OSNR = 16.5
+   - op_mode = 3
+      - OSNR = 16.0
+      - OSNR = 16.5
+
+NOTES:
+
+- Murat in top meeting talked to daniel
+- We could look for freq lock, check if all lanes are out of search
+- Log all_prelanes_locked
+
+- Write z_rw_dpp_control_freeze_perlane_status_b to 1;   // latch in 20-lane information synchronously.
+- Write z_rw_per_lane_status_addr to 0;  // State information for lane 0.
+- Read z_rw_per_lane_status_data;  // bit [2]: "0" this lane is not in SEARCH. "1" this lane is in SEARCH state.
+- Write z_rw_per_lane_status_addr to 8; // State information for lane 1.
+- Read z_rw_per_lane_status_data;  // bit [2]: "0" this lane is not in SEARCH. "1" this lane is in SEARCH state.
+- Write z_rw_per_lane_status_addr to 16; // State information for lane 2.
+- Read z_rw_per_lane_status_data;  // bit [2]: "0" this lane is not in SEARCH. "1" this lane is in SEARCH state
+- ........ Continue for all 20 lanes.
+- Write z_rw_per_lane_status_addr to 152; // State information for lane 19.
+- Read z_rw_per_lane_status_data;  // bit [2]: "0" this lane is not in SEARCH. "1" this lane is in SEARCH state
+- If all 20-lanes are out of SEARCH state, then DPP is likely to get demod_lock in the future.
+- Write z_rw_dpp_control_freeze_perlane_status_b to 0; // undo latch.

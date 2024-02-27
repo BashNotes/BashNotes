@@ -1,0 +1,56 @@
+IN PROGRESS:
+   - Figure out bill for Mount Carmel
+
+TODO:
+   - Sign up for Huntington Autopay
+
+   - Deneb Board Bringup
+      - high*Bandwidth12
+      - Read the Canopus EVK Quick Bring-up start to finish, see if I can run the python startup script for 100G ZR, which is mode_100G_QPSK_30_1b_47.py
+      - I'll update the instructions here for connecting to the board, running the startup script, configuring for internal loopback, monitoring, etc.
+ 
+Deneb Internal Getting Started Guide.docx
+
+   - Zapata API definitions:
+      - Update the RX1 definitions with details on whether they are intended to be used by the user or developer, in a new column.
+      - Group the config and status API calls by function.
+      - All of the individual DscSet... calls go under the single DscSetConfig API call (same with the DscGet calls under DscGetConfig).U
+      - In the end, maybe have Set and Get calls for Adc, Dsc, Agc, and Cdmf and another similar set for the get status of those functions.
+
+    
+   - Programmer's Guide:
+      - Complete the Programmer's Guide for the RX1 modules, including details about the User API calls.
+         - ADC CAL
+            - Deferred until we discuss the status of these modules
+            - See thread in zpt_rx1
+         - DSC
+            - Resampler
+            - Phase Imbalance
+            - Gain Imbalance
+            - IQ Correction
+            - Dynamic Skew Estimator
+         - CAR
+         - Digital AGC
+         - CDMF
+
+   - User's Guide:
+      - Update the User's Guide for the RX1 modules, which should be a subset of the Programmer's Guide, so should just be some copy and pasting.
+
+   - Task 10: Bring up Deneb eval board and verify configuration and operation for 100G ZR mode via GUI
+      - Confirm startup script: startup_py_v1p8p3/mode_100G_QPSK_30_1b_47.py
+
+   - Read OpenRISC thesis
+
+   - Udemy Embedded Software Design Patterns
+   - Read Polarization Mode Dispersion book
+   - SDK studying
+
+DONE:
+
+FW meeting
+   - Pivoting from Credo work, work on Programmer's Guide
+   - Get questions answered about modules, registers, etc
+   - Provide pseudocode such that BSS could write it
+   - No ADC/DAC CAL needed going forward, easier SERDES bringup
+   - Need FW framework from Broadcomm
+   - SPI bus for comms between MCU and chip

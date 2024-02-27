@@ -1,0 +1,67 @@
+TODO:
+   - Udemy Embedded Software Design Patterns
+   - Read Polarization Mode Dispersion book
+
+IN PROGRESS:
+   - Zapata Rail DSP and FEC IP Core: Programmer's Guide
+      - 
+   - Figure out startup mode for Durian
+      - 1b, 100G ZR
+   - SDK studying
+
+DONE:
+   - Performance self-review (Due 1/17)
+   - Add walkthrough of API and documents to Deneb Internal Getting Started Guide.docx
+   - Deneb docs
+      - DENEB_DSP_Rev1.0.pdf
+      - 100G_ZR_System_Test_Setup_V1.pptx
+         - Summarizes test platform for Zapata
+            - DSP, COSA, Laser
+         - Baseline Performance Parameters, debug
+         - Setup summary
+            - COSA EVB
+               - Coherent Optical Subassembly Eval Board
+            - iTLA EVB
+               - Integrable Tunable Laser Assembly Eval Board
+            - ASIC EVB
+               - ASIC Eval Board
+               - Start with Deneb, then Zapata
+         - Phase 1: Build and Baseline
+            - Build reference setup, DSP+COSA+Laser
+         - Phase 2: Evaluate Components
+            - Evaluate COSA version 2
+            - Evaluate pTLA
+            - Evaluate Zapata
+      - MKR00052 Canpous EVK Quick Bring-up User Guide RevA_Effect_Photonics.pdf
+      - Power Supply Guidelines
+      - SDK Kickoff Presentation
+      - Deneb API Reference Manual
+      - Deneb Datasheet 1.2
+         - 1.0 Overview
+         - 2.0 Introduction
+         - 5.0 - 5.7 Serial Peripheral Interface
+         - 6.0 Embedded Microprocessor
+      - Deneb Startup Procedure.pdf
+         - Focus on Ref 1 Mode 13 ID 1: 100G dQPSK, Staircase
+            - startup_py_v1p27p0p0/mode_100G_dQPSK_1_13_1.py
+
+Zapata SDK Team Meeting @ 10:30 PM
+   - Bring these points up:
+      - Recommendation from Scott
+      - Security of deneb access laptop
+      - Talk to IT about VPN required for teamviewer access
+
+NOTES:
+- Zapata vs Deneb Comparison
+   - Zapata
+      - Controlled through APB Interface to read and write ACT registers
+   - Deneb w/ MCU
+      - Controlled through SPI Interface
+      - Message based, with header and payload
+      - Without FW, can read and write registers via SPI
+      - With FW, can send high level commands to perform more complex operations
+      - User creates message to send to Deneb FW, FW performs the operation based on the message
+      - We do not have the firmware source code, only the binaries
+      - C and Python code provided creates and sends the messages to FW
+
+

@@ -1,0 +1,14 @@
+TODO:
+   - SDK Meeting tomorrow at 11:30, read docs at https://effectphotonicsltd.sharepoint.com/:f:/r/sites/Zapata/Shared%20Documents/FW%20(SDK)?csf=1&web=1&e=hWMocW
+   - Udemy Makefile
+   - Udemy Embedded Software Design Patterns
+
+IN PROGRESS:
+   - SDK studying
+
+DONE:
+   - Expensify tuition reimbursement
+   - Clean up disk space
+      - 244G -> 15G
+
+NOTES:

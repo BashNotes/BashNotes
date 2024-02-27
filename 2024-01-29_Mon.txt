@@ -1,0 +1,90 @@
+TODO:
+   - Task 6: Review relevant Deneb API calls against what is needed for Zapata
+      - Identify calls that overlap (need equivalent calls defined)
+      - Identify gaps taht need to be filled (need new calls defined)
+      - Identify target MCU (chip or module), can use Jihad to help guide
+      - Look into Zapata_Deneb_Opcode_Overview.xlsx, add Deneb API calls for each row
+
+   - Task 10: Bring up Deneb eval board and verify configuration and operation for 100G ZR mode via GUI
+      - Confirm startup script: startup_py_v1p8p3/mode_100G_QPSK_30_1b_47.py
+
+   - Udemy Embedded Software Design Patterns
+   - Read Polarization Mode Dispersion book
+   - SDK studying
+
+IN PROGRESS:
+   - Update bashrc and vimrc for synopsys cloud
+
+   - Analyze Elyse's CDMF coef fix results
+      - https://teams.microsoft.com/l/message/19:ab628abd215542b884ce6ea4284c6da8@thread.tacv2/1706538093682?tenantId=7cae46a2-5dda-47a1-ad0c-666d0aead08c&groupId=5cca5a59-d8f6-45d1-a58d-f674eb2e3503&parentMessageId=1702678057501&teamName=Zapata&channelName=zpt_rx1&createdTime=1706538093682
+      - IpTopB2bBaselineTest
+      - IpTopRxPerfTest
+   
+   - Task 12: Define and document set of Effect API calls to cover all configuration/operation of Durian Module
+      - This list should  map to all required API calls for Deneb operation.
+      - Results of this task should be initial SPI reference document for Durian and Zapata.
+      - https://teams.microsoft.com/l/message/19:bc967ba2141943ae950a6cb1983e76f7@thread.tacv2/1706204897441?tenantId=7cae46a2-5dda-47a1-ad0c-666d0aead08c&groupId=5cca5a59-d8f6-45d1-a58d-f674eb2e3503&parentMessageId=1706204897441&teamName=Zapata&channelName=FW%20
+
+   - Read through Credo Dove SDK
+
+   - Read OpenRISC thesis
+
+DONE:
+   - Move python script to Perforce
+
+   - Debug index 128 in cdmf_cfg, CL 5651
+      - Without fix, index 128 was default all-pass coefficient, without mfGain = 1.6 applied
+      - Elyse ran IpTopB2bBaselineTest and IpTopRxPerfTest with and without fix, shared results
+
+   - Review Programmer's Guide for RX1
+
+   - Write python script for configuring taps
+      - 32x6 array of s2.5 values, integer and phase components
+      - User provides config file, HI HQ VI VQ delays
+      - Sets static_skew_xx and taps for HI HQ VI VQ lanes
+      - Prints to standard out
+      - TODO: Use pv_sim_branch to generate config
+      - Pick some random rxHiqSkew rxViqSkew rxHvSkew values, see what registers are set
+      - Get taps from file, put into python 2D array of ints
+
+   - Zapata Rail DSP and FEC IP Core: Programmer's Guide
+      - Missing "of" in last sentence Memory Map section
+      - 7.1.4.2: Modulation Format includes 8QAM and 16QAM
+      - 7.2.3 RX Downsampler only has one ratio for all modes, ~4/5
+      - 7.2.5 RX DC Offset Correction doesn't exist in Zapata
+      - IQ and Phase Imbalance are barely changed from Gemini
+      - CD has a programmable matched filter but defaults to all-pass
+      - Need to verify updated number of taps and bitwidth
+
+   - Task 4: Review Credo Dove eval board user guide and compare with Deneb eval board documentation.
+      - Are there similar API calls?
+      - Can we start to map some of the calls and control/status procedures to what we will need for Zapata?
+      - May be worth looking at this but may not provide a lot of value if Credo is going to give us the code base.
+   - Notes: 
+      - CFD40401 Evaluation Board User Guide
+         - Similar to Deneb, comes with SDK and GUI software. Uses python 3 scripts instead of python 2
+         - API calls are structured as python functions
+         - Uses ipython (similar to Jupyter) for interactive configuration and debugging of DSP
+         - Dove GUI allows for extensive use of the SDK through a GUI interface
+         - Most initialization is done with one function, init_dove410(mode, target, tuning=True, reset=True, lane=[0,1,2,3,4,5,6,7])
+         - User guide is not a comprehensive list of API calls
+         - If I have a comprehensive list, then I could add a column to the opcode overview comparing Deneb and Dove API calls
+
+   - Figure out startup mode for Durian
+      - 1b, 100G ZR
+   - Performance self-review (Due 1/17)
+   - Add walkthrough of API and documents to Deneb Internal Getting Started Guide.docx
+
+Programmers Guide @ 1:00 PM
+   - Has enough information for registers and internal configuration
+   - Eric F wondering how to write about firmware
+   - Issue with static fractional skew, determined by tap phase
+   - 5 bit number representing fractional skew
+   - Do we include info on setting static skew taps in programmer's guide?
+
+- Provide instructions for setting of taps in programmer's guide
+- Ifdefs and function calls
+- Where to find taps file
+- Or CfgByFile calls
+- Python script to simulate this and generate taps
+
