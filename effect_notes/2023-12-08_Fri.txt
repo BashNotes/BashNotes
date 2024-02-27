@@ -1,9 +1,0 @@
-TODO:
-   - Create note-taking program
-   - CD Search
-
-DONE:
-   - Install WSL, go through README in PV_v20231208.tar.gz
-   - https://effectphotonicsltd.sharepoint.com/:u:/r/sites/Zapata/Shared%20Documents/General/Technical/Performance_Verification/Deliverables
-
-NOTES:
