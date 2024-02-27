@@ -1,0 +1,145 @@
+---------------------------------- IN PROGRESS ----------------------------------
+- Catch up
+- SPI Protocol.pptx
+   - http://gg.gg/spi_protocol
+
+- Internal Getting Started Guide
+   - http://gg.gg/teams_internal_getting_started_guide
+
+- Deneb Board Bringup
+   - https://teams.microsoft.com/l/message/19:bc967ba2141943ae950a6cb1983e76f7@thread.tacv2/1707935415145?tenantId=7cae46a2-5dda-47a1-ad0c-666d0aead08c&groupId=5cca5a59-d8f6-45d1-a58d-f674eb2e3503&parentMessageId=1707935415145&teamName=Zapata&channelName=FW%20(SDK)&createdTime=1707935415145
+   - high*Bandwidth12
+   - Read the Canopus EVK Quick Bring-up start to finish, see if I can run the python startup script for 100G ZR, which is mode_100G_QPSK_30_1b_47.py
+   - I'll update the instructions here for connecting to the board, running the startup script, configuring for internal loopback, monitoring, etc.
+
+   - ssh root@192.168.145.183
+   - COM port connection
+      - COM4
+      - root, deneb_leopard
+
+      - Deneb Datasheet
+         - 26: modes
+            - 1:   QPSK, OFEC, 3/2 ADC OSR, FlexO-1-DO
+            - 1w:  QPSK, OFEC, 12/5 ADC OSR, FlexO-1-DO
+            - 1b:  QPSK, OFEC, 3/2 ADC OSR, FlexO-1-DO
+            - 1bh: QPSK, OFEC, 3/2 ADC OSR, FlexO-1-DO
+        ->  - 13:  QPSK, SCFEC, 3/2 ADC OSR, FlexO-1-DO
+            - 13w: QPSK, SCFEC, 3/2 ADC OSR, FlexO-1-DO
+            - 10h: 16QAM, 6/5, 
+               - Nishann needs help with this
+         - 32: top level diagram
+         - 49: 100GE Clients
+         - 66: 100G Framer
+         - 95: Crossbar loopbacks
+         - 148: Line loopback modes
+         - 196: OFEC and SCFEC
+         - 208: Ball Map
+
+         - Testing internal loopback
+            - real time BER
+            - can view constellations
+            - can change skew and see BER change
+
+
+      - Nishaan call
+         - Identify connectors needed for electrical loopback
+         - Get internal loopback working on our board
+         - Get access to Maynard EVK
+         - Bobby Carlin to request supplies
+         - Robert Palmer wrote Deneb GUI utility
+         - Nishaan working on optics, electrical loopback
+
+- Task 10: Bring up Deneb eval board and verify configuration and operation for 100G ZR mode via GUI
+   - ClevelandLab python project
+   - start_100G_ZR_internal_loopback.py
+   - set_vdd function missing
+   - GetIngressSmState stuck in 4, sometimes 1
+
+- Talk with Nishaan
+   - Showed my shared screen
+   - Looking at bitbucket
+   - DTS0021, page 26
+   - 13 and 13w, different oversampling rate
+   - mode_100G_dQPSK_1_13_1
+      - staircase, 3/2
+   - mode_100G_dQPSK_2_13w_245
+
+   - Nishaan has deneb_api.py script, still buggy
+   - Ask if he'll be in the lab tomorrow/today
+
+------------------------------------- TODO --------------------------------------
+- Set up Global Protect VPN
+   - Respond to Jesse van Asselt if needed
+
+- Security Culture Survey
+
+- Zapata API definitions:
+   - Update the RX1 definitions with details on whether they are intended to be used by the user or developer, in a new column.
+   - Group the config and status API calls by function.
+   - All of the individual DscSet... calls go under the single DscSetConfig API call (same with the DscGet calls under DscGetConfig).
+   - In the end, maybe have Set and Get calls for Adc, Dsc, Agc, and Cdmf and another similar set for the get status of those functions
+
+- Programmer's Guide:
+   - Complete the Programmer's Guide for the RX1 modules, including details about the User API calls.
+      - ADC CAL
+         - Deferred until we discuss the status of these modules
+         - See thread in zpt_rx1
+      - DSC
+         - Resampler
+         - Phase Imbalance
+         - Gain Imbalance
+         - IQ Correction
+         - Dynamic Skew Estimator
+      - CAR
+      - Digital AGC
+      - CDMF
+
+- User's Guide:
+   - Update the User's Guide for the RX1 modules, which should be a subset of the Programmer's Guide, so should just be some copy and pasting.
+
+- Udemy Embedded Software Design Patterns
+- Read Polarization Mode Dispersion book
+
+------------------------------------- DONE --------------------------------------
+- Write guide for connecting to board
+
+- Weekly DSP Team Meeting Notes
+   - http://gg.gg/weekly_dsp_team_meeting_notes
+
+------------------------------------- NOTES -------------------------------------
+
+Meet with Nishaan
+- start_gui.bat starts DSP GUI
+   - double click, select boot FW
+   - going through 13w one more time, getting garbage
+   - dropdown menu can be modified with python script, copy from mode
+   - select mode, select internal loopback
+   - click configure traffic
+   - Poll BER every 1000 ms
+   - Constellation heatmap
+   - TX/RX Skew (ps), HIQ, VIQ, HV
+   - H/V swaps, maybe not effective
+   - Check over modes 13 and 13w, ensure they are correct
+   - Mode 9 is working
+   - Mode 13 was working, BER 1.0
+
+
+------------------ Weekly DSP Team Meeting @ 11:00 2024-02-27 ------------------
+Russell:
+- Communicating with Broadcom, getting contract together
+- Making holistic, top level schedule for Phoenix
+- Working internally on documents with Broadcom
+- Putting together on integrated schedule
+- More FW work than what we envisioned originally
+- More HW work needs to be done, naturally
+- Thinking about in-house resources vs BSS
+- Hopefully next week will have a more solidified schedule
+- Easier for us to track long-term
+
+Nishaan & Kyle:
+- Update on Deneb EVK progress, internal and electrical loopback
+
+Kyle:
+- Suggestion for transcribing Weekly Cleveland Team Meeting
+- Matt will provide location for OneNote for meeting notes
+
