@@ -1,6 +1,5 @@
 #!/bin/bash -e
 
-
 #-#-#-#-#-#-#-# USAGE #-#-#-#-#-#-#-#-#-#
 function usage {
    echo "\
@@ -39,19 +38,22 @@ function open_notes {
    "
 }
 
-#-#-#-#-#-#  DEBUG SYMBOLS  #-#-#-#-#-#-#
+#-#-#-#-#-#-#  BASH DEBUG #-#-#-#-#-#-#-#
 #-# 
-# * Disable *
+#-# Copy this to the first line to start with debug enabled
+#-# 
+#-# *Disable*
 #!/bin/bash -e
-# * Enable *
+#-# *Enable*
 #!/bin/bash -ex
 
 #-#-#-#-#-#-#  CLOCK FIX  #-#-#-#-#-#-#-#
 #-# 
-# Fix clock drift in WSL
+#-# Fix clock drift in WSL
+#-# 
 sudo hwclock -s
 
-#-#-#-#-#-#- NOTES DIRECTORY  #-#-#-#-#-#
+#-#-#-#-#-# NOTES DIRECTORY #-#-#-#-#-#-#
 #-# 
 #-#  If directory argument was provided
 #-#     Use provided directory as notes dir
@@ -65,15 +67,13 @@ if [ $# -eq 0 ]; then
    exit
    # notes_dir="default_notes"
 fi
-
 if [ ! -d $notes_dir ]; then
    echo "Creating notes directory: $notes_dir"
    mkdir $notes_dir
 fi
-
 echo "Using \""$notes_dir"\" as the notes directory."
 
-#-#-#-#-#-# CURRENT NOTES FILE  #-#-#-#-#
+#-#-#-#-# CURRENT NOTES FILE #-#-#-#-#-#
 #-# 
 #-# If current notes don't already exist
 #-#    Get the latest note entry
@@ -94,18 +94,31 @@ if [[ ! -a $notes_dir/$current_filename ]]; then
    fi
 fi
 
-previous_filename=$(ls -rv $notes_dir | grep -m 2 "txt" | tail -n 1) # Most recent note entry before today
+
+#-#-#-#-#-#-# PREVIOUS NOTES #-#-#-#-#-#-#
+#-# 
+#-# Check if notes existed from a previous day
+#-# If not, use current notes as previous notes
+#-# 
+previous_filename=$(ls -rv $notes_dir | grep -m 2 "txt" | tail -n 1)
 if [ -z $previous_filename ]; then
    previous_filename=$current_filename
 fi
 
-# Make all files except current notes read-only
+#-#-#-#-#-#-# PERMISSIONS  #-#-#-#-#-#-#-#
+#-# 
+#-# Make all files except current notes read-only
+#-# 
 chmod a-w $notes_dir/*
 chmod a+w $notes_dir/$current_filename
 
+#-#-#-#-#-#-# OPEN NOTES #-#-#-#-#-#-#-#-#
+#-#
+#-# Run open_notes function defined above
+#-# Check if it's a new day every 10 seconds
+#-# If it's a new day, close the script
+#-#
 open_notes &
-
-# Check if it's a new day every 10 seconds
 while [[ -a $notes_dir/$current_filename ]]; do
    current_filename=$(date -I)_$(date +%a).txt
    sleep 10
