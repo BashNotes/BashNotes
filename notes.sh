@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 
 #-#-#-#-#-#-# INTRODUCTION  #-#-#-#-#-#-#
 #-# A simple program for creating notes 
@@ -18,22 +18,21 @@
 sudo hwclock -s
 
 #-#-#-#-#-#- NOTES DIRECTORY  #-#-#-#-#-#
-#-#  If [ no arguments when script was run ]
-#-#     If [ default notes directory exists yet ]
-#-#        Make new directory called $default_notes
-#-#  Else (directory argument was provided)
-#-#      Use provided directory as notes dir
+#-#  If directory argument was provided
+#-#     Use provided directory as notes dir
+#-#  If notes directory exists yet
+#-#     Make new notes directory
 #-#  Print directory being used
 #-#       
 export notes_dir=default_notes
 optional_notes_dir=$1
-if [ -z $optional_notes_dir ]; then
-   if [ ! -d default_notes ]; then
-      echo "Creating default notes directory: default_notes"
-      mkdir default_notes
-   fi
-else
+if [ -n $optional_notes_dir ]; then
    notes_dir=$optional_notes_dir
+fi
+
+if [ ! -d $notes_dir ]; then
+   echo "Creating notes directory: $notes_dir"
+   mkdir $notes_dir
 fi
 
 echo "Using \""$notes_dir"\" as the notes directory."
@@ -58,7 +57,7 @@ if [[ ! -a $notes_dir/$current_filename ]]; then
    fi
 fi
 
-export previous_filenam=$(ls -rv | grep -m 2 "txt" | tail -n 1) # Most recent note entry before today
+export previous_filename=$(ls -rv $notes_dir | grep -m 2 "txt" | tail -n 1) # Most recent note entry before today
 if [ -z $previous_filename ]; then
    previous_filename=$current_filename
 fi
