@@ -1,3 +1,5 @@
+cd $notes_dir
+
 set nonumber norelativenumber
 colorscheme peachpuff
 
