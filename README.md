@@ -3,11 +3,11 @@
 ./bashnotes NOTES_DIR NOTES_PROGRAM
 
 ## Summary
-A simple program written in bash for creating and managing notes in text files, using the text editor of your choosing.
+A simple program that allows you to take notes in your preferred text editor.
 
-New daily notes are created automatically and copy from the previous day.
+Daily notes are automatically created and copy contents from the previous day.
 
-Argument 1: The directory where the notes directory will be used.
+Argument 1: The directory where the notes are/will be located.
 
 Argument 2: The program that the notes will be edited (vim, gedit, emacs, etc.).
 
