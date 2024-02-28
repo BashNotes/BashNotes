@@ -1,0 +1,3 @@
+#!/bin/bash
+
+bash -e ./main.sh $1 $2
