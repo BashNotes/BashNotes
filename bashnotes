@@ -1,3 +1,4 @@
 #!/bin/bash
 
-bash -e ./main.sh $1 $2
+bashnotes_dir=$(grep -o ".*/" <<< $0)
+bash -e $bashnotes_dir/src/main.sh $1 $2
