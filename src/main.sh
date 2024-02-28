@@ -38,8 +38,8 @@ script_location=$0
 notes_dir=$1
 notes_program=$2
 
-script_dir=$(grep -o ".*/" <<< $script_location)
-source $script_dir/notes_program.sh
+script_dir=$(echo $script_location | grep -o ".*/")
+source $script_dir/notes_programs.sh
 
 #-#-#-#-#-# NOTES DIRECTORY #-#-#-#-#-#-
 #-# 
@@ -59,7 +59,7 @@ echo "Using \""$notes_dir"\" as the notes directory."
 #-#       Create a new file with the current date
 #-#    Else (If there is a latest note entry)
 #-#       Copy the latest note entry to the current notes
-#-#       
+#-#
 current_filename=$(date -I)_$(date +%a).txt
 
 if [[ ! -a $notes_dir/$current_filename ]]; then
