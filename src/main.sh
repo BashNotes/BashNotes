@@ -2,7 +2,7 @@
 function usage {
    echo "\
    Usage:
-      ./notes.sh NOTES_DIR NOTES_PROGRAM
+      ./bashnotes NOTES_DIR NOTES_PROGRAM
 
    Summary:
       A simple program written in bash for
@@ -19,7 +19,7 @@ function usage {
       will be edited (vim, gedit, emacs, etc.).
 
    Example:
-      ./notes.sh work_notes vim
+      ./bashnotes work_notes vim
 "
 }
 
