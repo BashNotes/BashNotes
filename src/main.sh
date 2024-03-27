@@ -106,6 +106,7 @@ while [[ -a $notes_dir/$current_filename ]]; do
    sleep 10
 done
 
+#-#-#- RESET TERMINAL AFTER CLOSE #-#-#-
 reset
 
 #-#-#-#-#-#-# CLOCK FIX #-#-#-#-#-#-#-#-
