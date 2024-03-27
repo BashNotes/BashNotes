@@ -106,6 +106,8 @@ while [[ -a $notes_dir/$current_filename ]]; do
    sleep 10
 done
 
+reset
+
 #-#-#-#-#-#-# CLOCK FIX #-#-#-#-#-#-#-#-
 #-# 
 #-# Fix clock drift in WSL
