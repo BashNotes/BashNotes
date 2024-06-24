@@ -21,5 +21,7 @@ function nvimdiff {
    tab split $previous_filename
    vert diffsplit $current_filename
    tabnext 1
+
+   cd ..
    "
 }
