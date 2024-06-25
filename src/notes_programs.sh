@@ -20,6 +20,7 @@ function nvimdiff {
    set filetype=markdown
 
    tab split $previous_filename
+   set filetype=markdown
    vert diffsplit $current_filename
    tabnext 1
 
