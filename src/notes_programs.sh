@@ -17,6 +17,7 @@ function nvimdiff {
    colorscheme peachpuff
 
    edit $current_filename
+   set filetype=markdown
 
    tab split $previous_filename
    vert diffsplit $current_filename
