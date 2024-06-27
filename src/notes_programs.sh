@@ -11,19 +11,15 @@
 
 function nvimdiff {
    nvim -c "\
-   cd $notes_dir
-
    set nonumber norelativenumber
    colorscheme peachpuff
 
-   edit $current_filename
+   edit $1
    set filetype=markdown
 
-   tab split $previous_filename
+   tab split $2
    set filetype=markdown
-   vert diffsplit $current_filename
+   vert diffsplit $1
    tabnext 1
-
-   cd ..
    "
 }

@@ -89,12 +89,21 @@ fi
 chmod a-w $notes_dir/*
 chmod a+w $notes_dir/$current_filename
 
+#-#-#-#-#-#-# CREATE SYMLINKS #-#-#-#-#-#-#-#
+#-#
+#-# Go to notes directory and create symbolic links for current and previous notes
+#-#
+cd $notes_dir
+ln -f -s $current_filename  current_daily_notes
+ln -f -s $previous_filename previous_daily_notes
+cd ..
+
 #-#-#-#-#-#-# OPEN NOTES #-#-#-#-#-#-#-#
 #-#
 #-# Run the notes_program specified
 #-# in the arguments
 #-#
-$notes_program $notes_dir/$current_filename &
+$notes_program $notes_dir/current_daily_notes $notes_dir/previous_daily_notes &
 
 #-#-#-#-#-#-# NEW DAY #-#-#-#-#-#-#-#-#-
 #-#
