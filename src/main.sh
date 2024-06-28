@@ -2,7 +2,7 @@
 function usage {
    echo "\
    Usage:
-      ./bashnotes NOTES_DIR NOTES_PROGRAM
+      ./bashnotes NOTES_DIR [NOTES_PROGRAM]
 
    Summary:
       A simple program that allows you to take
@@ -17,6 +17,9 @@ function usage {
       Argument 2: The program that the notes
       will be edited (vim, gedit, emacs, etc.).
 
+      If argument 2 is not provided, Bashnotes 
+      will sync but not open an editor.
+
    Example:
       ./bashnotes work_notes vim
 "
@@ -24,21 +27,27 @@ function usage {
 
 #-#-#-#-#-#-# PROCESS ARGS #-#-#-#-#-#-#
 #-# 
-#-# Enforce usage, two arguments required
+#-# Enforce usage, first arguments required
 #-#    First argument is the directory where the notes are located
 #-#    Second argument is the setting to use when opening notes
-#-# Then source the notes_programs.sh script
 #-# 
-if [ $# -lt 2 ]; then
+if [ $# -lt 1 ]; then
    usage
    exit
 fi
-script_location=$0
 notes_dir=$1
 notes_program=$2
 
-script_dir=$(echo $script_location | grep -o ".*/")
-source $script_dir/notes_programs.sh
+# Sync notes before changes
+git checkout notes
+git pull -q origin notes
+git restore -q --staged .
+
+#-#-#-#- SOURCE NOTES PROGRAMS #-#-#-#-#
+#-# 
+#-# Source the notes_programs.sh script
+#-# 
+source src/notes_programs.sh
 
 #-#-#-#-#-# NOTES DIRECTORY #-#-#-#-#-#-
 #-# 
@@ -50,24 +59,30 @@ if [ ! -d $notes_dir ]; then
 fi
 echo "Using \""$notes_dir"\" as the notes directory."
 
+if [ ! -d $notes_dir/daily_notes ]; then
+   echo "Creating daily_notes directory: $notes_dir/daily_notes"
+   mkdir $notes_dir/daily_notes
+fi
+echo "Using \""$notes_dir/daily_notes"\" as the daily notes directory."
+
 #-#-#-#-# CURRENT NOTES FILE #-#-#-#-#-#
 #-# 
 #-# If current notes don't already exist
-#-#    Get the latest note entry
+#-#    Get the latest note entry that ends in .txt
 #-#    If there is no latest note entry
 #-#       Create a new file with the current date
 #-#    Else (If there is a latest note entry)
 #-#       Copy the latest note entry to the current notes
 #-#
-current_filename=$(date -I)_$(date +%a).txt
+current_daily_notes=$(date -I)_$(date +%a).txt
 
-if [[ ! -a $notes_dir/$current_filename ]]; then
-   latest_filename=$(ls -rv $notes_dir | head -n 1)
+if [[ ! -a $notes_dir/daily_notes/$current_daily_notes ]]; then
+   latest_filename=$(ls -rv $notes_dir/daily_notes | grep ".txt" | head -n 1)
    if [ -z $latest_filename ]; then
-      echo  "Creating new notes file: " $notes_dir/$current_filename "..."
-      touch $notes_dir/$current_filename
+      echo  "Creating new notes file: " $notes_dir/daily_notes/$current_daily_notes "..."
+      touch $notes_dir/daily_notes/$current_daily_notes
    else 
-      cp $notes_dir/$latest_filename $notes_dir/$current_filename
+      cp $notes_dir/daily_notes/$latest_filename $notes_dir/daily_notes/$current_daily_notes
    fi
 fi
 
@@ -77,49 +92,58 @@ fi
 #-# Check if notes existed from a previous day
 #-# If not, use current notes as previous notes
 #-# 
-previous_filename=$(ls -rv $notes_dir | grep -m 2 "txt" | tail -n 1)
-if [ -z $previous_filename ]; then
-   previous_filename=$current_filename
+previous_daily_notes=$(ls -rv $notes_dir/daily_notes/ | grep -m 2 ".txt" | tail -n 1)
+if [ -z $previous_daily_notes ]; then
+   previous_daily_notes=$current_daily_notes
 fi
 
 #-#-#-#-#-# SET PERMISSIONS #-#-#-#-#-#-
 #-# 
 #-# Make all files read-only, except current notes
 #-# 
-chmod a-w $notes_dir/*
-chmod a+w $notes_dir/$current_filename
+chmod a-w $notes_dir/daily_notes/*
+chmod a+w $notes_dir/daily_notes/$current_daily_notes
 
 #-#-#-#-#-#-# CREATE SYMLINKS #-#-#-#-#-#-#-#
 #-#
 #-# Go to notes directory and create symbolic links for current and previous notes
 #-#
-cd $notes_dir
-ln -f -s $current_filename  current_daily_notes
-ln -f -s $previous_filename previous_daily_notes
-cd ..
+cd $notes_dir/daily_notes
+current_daily_notes_symlink=.$current_daily_notes
+previous_daily_notes_symlink=.$previous_daily_notes
+ln -f -s $current_daily_notes  $current_daily_notes_symlink
+ln -f -s $previous_daily_notes $previous_daily_notes_symlink
+cd $OLDPWD
 
 #-#-#-#-#-#-# OPEN NOTES #-#-#-#-#-#-#-#
 #-#
 #-# Run the notes_program specified
 #-# in the arguments
 #-#
-$notes_program $notes_dir/current_daily_notes $notes_dir/previous_daily_notes &
+if [ $# -gt 1 ]; then
+   $notes_program $notes_dir/daily_notes/$current_daily_notes_symlink $notes_dir/daily_notes/$previous_daily_notes_symlink
+fi
 
 #-#-#-#-#-#-# NEW DAY #-#-#-#-#-#-#-#-#-
 #-#
 #-# Check if it's a new day every 10 seconds
 #-# If it's a new day, close the script
 #-#
-while [[ -a $notes_dir/$current_filename ]]; do
-   current_filename=$(date -I)_$(date +%a).txt
-   sleep 10
-done
-
-#-#-#- RESET TERMINAL AFTER CLOSE #-#-#-
-reset
+# while [[ -a $notes_dir/daily_notes/$current_daily_notes ]]; do
+#    current_daily_notes=$(date -I)_$(date +%a).txt
+#    sleep 10
+# done
+# 
+# #-#-#- RESET TERMINAL AFTER CLOSE #-#-#-
+# reset
 
 #-#-#-#-#-#-# CLOCK FIX #-#-#-#-#-#-#-#-
 #-# 
 #-# Fix clock drift in WSL
 #-# 
 # sudo hwclock -s
+
+git add $notes_dir
+git commit -m "$notes_dir synced at $(date -Im)" && echo "$notes_dir synced at $(date -Im)"
+git push origin notes
+git checkout -q @{-1}

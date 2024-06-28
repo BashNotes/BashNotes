@@ -1,4 +1,8 @@
-#!/bin/bash
+#!/bin/bash -e
 
-bashnotes_dir=$(grep -o ".*/" <<< $0)
-bash -e $bashnotes_dir/src/main.sh $1 $2
+if [ $0 != "./bashnotes" ]; then
+   echo "ERROR: Run bash notes in the BashNotes directory."
+   exit
+fi
+
+bash -e src/main.sh $1 $2
