@@ -125,14 +125,8 @@ if [ $# -gt 1 ]; then
    $notes_program $notes_dir/daily_notes/$current_daily_notes_symlink $notes_dir/daily_notes/$previous_daily_notes_symlink
 fi
 
-#-#-#-#-#-#-# CLOCK FIX #-#-#-#-#-#-#-#-
-#-# 
-#-# Fix clock drift in WSL
-#-# 
-# sudo hwclock -s
-
-# Sync notes before changes
+# Sync notes after changes
 git add $notes_dir
 git commit -m "$notes_dir synced at $(date -Im)" && echo "$notes_dir synced at $(date -Im)"
-# git push origin notes
+git push origin notes
 git checkout -q @{-1}
