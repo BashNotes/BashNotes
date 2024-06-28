@@ -15,11 +15,10 @@ function nvimdiff {
    colorscheme peachpuff
 
    edit $1
-   set filetype=markdown
 
    tab split $2
-   set filetype=markdown
    vert diffsplit $1
+   wincmd h
    tabnext 1
    "
 }

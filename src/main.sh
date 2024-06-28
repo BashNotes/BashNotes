@@ -68,16 +68,16 @@ echo "Using \""$notes_dir/daily_notes"\" as the daily notes directory."
 #-#-#-#-# CURRENT NOTES FILE #-#-#-#-#-#
 #-# 
 #-# If current notes don't already exist
-#-#    Get the latest note entry that ends in .txt
+#-#    Get the latest note entry that ends in .md
 #-#    If there is no latest note entry
 #-#       Create a new file with the current date
 #-#    Else (If there is a latest note entry)
 #-#       Copy the latest note entry to the current notes
 #-#
-current_daily_notes=$(date -I)_$(date +%a).txt
+current_daily_notes=$(date -I)_$(date +%a).md
 
 if [[ ! -a $notes_dir/daily_notes/$current_daily_notes ]]; then
-   latest_filename=$(ls -rv $notes_dir/daily_notes | grep ".txt" | head -n 1)
+   latest_filename=$(ls -rv $notes_dir/daily_notes | grep ".md" | head -n 1)
    if [ -z $latest_filename ]; then
       echo  "Creating new notes file: " $notes_dir/daily_notes/$current_daily_notes "..."
       touch $notes_dir/daily_notes/$current_daily_notes
@@ -92,7 +92,7 @@ fi
 #-# Check if notes existed from a previous day
 #-# If not, use current notes as previous notes
 #-# 
-previous_daily_notes=$(ls -rv $notes_dir/daily_notes/ | grep -m 2 ".txt" | tail -n 1)
+previous_daily_notes=$(ls -rv $notes_dir/daily_notes/ | grep -m 2 ".md" | tail -n 1)
 if [ -z $previous_daily_notes ]; then
    previous_daily_notes=$current_daily_notes
 fi
@@ -109,6 +109,7 @@ chmod a+w $notes_dir/daily_notes/$current_daily_notes
 #-# Go to notes directory and create symbolic links for current and previous notes
 #-#
 cd $notes_dir/daily_notes
+rm .*.md || true # remove all previous symlinks
 current_daily_notes_symlink=.$current_daily_notes
 previous_daily_notes_symlink=.$previous_daily_notes
 ln -f -s $current_daily_notes  $current_daily_notes_symlink
@@ -124,26 +125,14 @@ if [ $# -gt 1 ]; then
    $notes_program $notes_dir/daily_notes/$current_daily_notes_symlink $notes_dir/daily_notes/$previous_daily_notes_symlink
 fi
 
-#-#-#-#-#-#-# NEW DAY #-#-#-#-#-#-#-#-#-
-#-#
-#-# Check if it's a new day every 10 seconds
-#-# If it's a new day, close the script
-#-#
-# while [[ -a $notes_dir/daily_notes/$current_daily_notes ]]; do
-#    current_daily_notes=$(date -I)_$(date +%a).txt
-#    sleep 10
-# done
-# 
-# #-#-#- RESET TERMINAL AFTER CLOSE #-#-#-
-# reset
-
 #-#-#-#-#-#-# CLOCK FIX #-#-#-#-#-#-#-#-
 #-# 
 #-# Fix clock drift in WSL
 #-# 
 # sudo hwclock -s
 
+# Sync notes before changes
 git add $notes_dir
 git commit -m "$notes_dir synced at $(date -Im)" && echo "$notes_dir synced at $(date -Im)"
-git push origin notes
+# git push origin notes
 git checkout -q @{-1}
