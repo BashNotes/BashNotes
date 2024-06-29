@@ -138,14 +138,14 @@ cd $OLDPWD
 #-# Run the notes_program specified
 #-# in the arguments
 #-#
-if [ -n $notes_program ]; then
+if [ -n "$notes_program" ]; then
    $notes_program $notes_dir/daily_notes/$current_daily_notes_symlink $notes_dir/daily_notes/$previous_daily_notes_symlink
 fi
 
 # Sync notes after changes
 git add $notes_dir
 git commit -m "$notes_dir synced at $(date -Im)" && echo "$notes_dir synced at $(date -Im)"
-if [ -z $offline ]; then
+if [ -z "$offline" ]; then
    git push origin notes
 fi
 git checkout -q @{-1}
