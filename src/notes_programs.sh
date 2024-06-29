@@ -22,3 +22,12 @@ function nvimdiff {
    tabnext 1
    "
 }
+
+function nvim_notes {
+   nvim -c "\
+   set nonumber norelativenumber
+   colorscheme peachpuff
+
+   edit $1
+   "
+}
