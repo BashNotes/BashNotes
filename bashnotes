@@ -5,4 +5,4 @@ if [ $0 != "./bashnotes" ]; then
    exit
 fi
 
-bash -e src/main.sh $1 $2
+bash -e src/main.sh $@

@@ -2,7 +2,10 @@
 function usage {
    echo "\
    Usage:
-      ./bashnotes NOTES_DIR [NOTES_PROGRAM]
+      ./bashnotes NOTES_DIR [OPTIONS] [NOTES_PROGRAM]
+
+   Options:
+      -o/--offline Skip pull and push of git repository
 
    Summary:
       A simple program that allows you to take
@@ -36,11 +39,26 @@ if [ $# -lt 1 ]; then
    exit
 fi
 notes_dir=$1
-notes_program=$2
+shift
+
+while [ $# -gt 0 ]; do
+   case $1 in
+      -o|--offline)
+         offline="y"
+         shift
+         ;;
+      *)
+         notes_program=$1
+         shift
+         ;;
+   esac
+done
 
 # Sync notes before changes
 git checkout notes
-git pull -q origin notes
+if [ -z $offline ]; then
+   git pull -q origin notes
+fi
 git restore -q --staged .
 
 #-#-#-#- SOURCE NOTES PROGRAMS #-#-#-#-#
@@ -63,7 +81,6 @@ if [ ! -d $notes_dir/daily_notes ]; then
    echo "Creating daily_notes directory: $notes_dir/daily_notes"
    mkdir $notes_dir/daily_notes
 fi
-echo "Using \""$notes_dir/daily_notes"\" as the daily notes directory."
 
 #-#-#-#-# CURRENT NOTES FILE #-#-#-#-#-#
 #-# 
@@ -121,12 +138,14 @@ cd $OLDPWD
 #-# Run the notes_program specified
 #-# in the arguments
 #-#
-if [ $# -gt 1 ]; then
+if [ -n $notes_program ]; then
    $notes_program $notes_dir/daily_notes/$current_daily_notes_symlink $notes_dir/daily_notes/$previous_daily_notes_symlink
 fi
 
 # Sync notes after changes
 git add $notes_dir
 git commit -m "$notes_dir synced at $(date -Im)" && echo "$notes_dir synced at $(date -Im)"
-git push origin notes
+if [ -z $offline ]; then
+   git push origin notes
+fi
 git checkout -q @{-1}
