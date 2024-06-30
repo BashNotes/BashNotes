@@ -1,3 +1,5 @@
+#!/bin/bash -e
+
 #-#-#-#-#-#-#-# USAGE #-#-#-#-#-#-#-#-#-
 function usage {
    echo "\
@@ -28,20 +30,70 @@ function usage {
 "
 }
 
+#-#-#-#-#-#-# OPEN NOTES #-#-#-#-#-#-#-#
+#-#
+#-# More advanced notes programs.
+#-# Add your own to your liking!
+#-#
+#-# nvim_notes:
+#-#    Open current notes in neovim with some useful keybinds
+#-#
+#-# nvim_diff:
+#-#    Open current notes in neovim with some useful keybinds
+#-#    First tab is current notes.
+#-#    Second tab is a diff of previous and current notes.
+#-#
+
+function nvim_diff {
+   nvim -c "\
+   noremap <M-p> :w<Enter>:!./bashnotes personal_notes<Enter>
+   noremap <M-e> :w<Enter>:!./bashnotes effect_notes<Enter>
+
+   set nonumber norelativenumber
+   colorscheme peachpuff
+
+   edit $1
+
+   tab split $2
+   vert diffsplit $1
+   wincmd h
+   tabnext 1
+   "
+}
+
+function nvim_notes {
+   nvim -c "\
+   noremap <M-p> :w<Enter>:!./bashnotes personal_notes<Enter>
+   noremap <M-e> :w<Enter>:!./bashnotes effect_notes<Enter>
+
+   set nonumber norelativenumber
+   colorscheme peachpuff
+
+   edit $1
+   "
+}
+
+#-#-#-#-#-#- PROGRAM STARTS #-#-#-#-#-#-
+
+if [[ $0 != "./bashnotes" && $0 != "bashnotes" ]]; then
+   echo "ERROR: Run bash notes in the BashNotes directory."
+   exit
+fi
+
 #-#-#-#-#-#-# PROCESS ARGS #-#-#-#-#-#-#
 #-# 
 #-# Enforce usage, first arguments required
 #-#    First argument is the directory where the notes are located
 #-#    Second argument is the setting to use when opening notes
 #-# 
-if [ $# -lt 1 ]; then
+if [[ $# -lt 1 ]]; then
    usage
    exit
 fi
 notes_dir=$1
 shift
 
-while [ $# -gt 0 ]; do
+while [[ $# -gt 0 ]]; do
    case $1 in
       -o|--offline)
          offline="y"
@@ -56,28 +108,22 @@ done
 
 # Sync notes before changes
 git checkout notes
-if [ -z $offline ]; then
+if [[ -z $offline ]]; then
    git pull -q origin notes
 fi
 git restore -q --staged .
-
-#-#-#-#- SOURCE NOTES PROGRAMS #-#-#-#-#
-#-# 
-#-# Source the notes_programs.sh script
-#-# 
-source src/notes_programs.sh
 
 #-#-#-#-#-# NOTES DIRECTORY #-#-#-#-#-#-
 #-# 
 #-# If notes directory doesn't exist, make one
 #-# 
-if [ ! -d $notes_dir ]; then
+if [[ ! -d $notes_dir ]]; then
    echo "Creating notes directory: $notes_dir"
    mkdir $notes_dir
 fi
 echo "Using \""$notes_dir"\" as the notes directory."
 
-if [ ! -d $notes_dir/daily_notes ]; then
+if [[ ! -d $notes_dir/daily_notes ]]; then
    echo "Creating daily_notes directory: $notes_dir/daily_notes"
    mkdir $notes_dir/daily_notes
 fi
@@ -95,7 +141,7 @@ current_daily_notes=$(date -I)_$(date +%a).md
 
 if [[ ! -a $notes_dir/daily_notes/$current_daily_notes ]]; then
    latest_filename=$(ls -rv $notes_dir/daily_notes | grep ".md" | head -n 1)
-   if [ -z $latest_filename ]; then
+   if [[ -z $latest_filename ]]; then
       echo  "Creating new notes file: " $notes_dir/daily_notes/$current_daily_notes "..."
       touch $notes_dir/daily_notes/$current_daily_notes
    else 
@@ -110,7 +156,7 @@ fi
 #-# If not, use current notes as previous notes
 #-# 
 previous_daily_notes=$(ls -rv $notes_dir/daily_notes/ | grep -m 2 ".md" | tail -n 1)
-if [ -z $previous_daily_notes ]; then
+if [[ -z $previous_daily_notes ]]; then
    previous_daily_notes=$current_daily_notes
 fi
 
@@ -138,14 +184,14 @@ cd $OLDPWD
 #-# Run the notes_program specified
 #-# in the arguments
 #-#
-if [ -n "$notes_program" ]; then
+if [[ -n "$notes_program" ]]; then
    $notes_program $notes_dir/daily_notes/$current_daily_notes_symlink $notes_dir/daily_notes/$previous_daily_notes_symlink
 fi
 
 # Sync notes after changes
+git restore -q --staged .
 git add $notes_dir
 git commit -m "$notes_dir synced at $(date -Im)" && echo "$notes_dir synced at $(date -Im)"
-if [ -z "$offline" ]; then
+if [[ -z "$offline" ]]; then
    git push origin notes
 fi
-git checkout -q @{-1}
