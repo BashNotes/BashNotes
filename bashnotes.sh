@@ -208,5 +208,7 @@ if [[ -z $skip_git ]]; then
    git commit -m "$notes_dir synced at $(date -Im)" && echo "$notes_dir synced at $(date -Im)"
    if [[ -z "$offline" ]]; then
       git push origin $notes_dir
+      # Print a link to the notes link in Github (TODO: Generalize to any user)
+      echo "https://github.com/Miyelsh/BashNotes/tree/$notes_dir/$notes_dir"
    fi
 fi
