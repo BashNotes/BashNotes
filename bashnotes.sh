@@ -76,10 +76,9 @@ function nvim_notes {
 
 #-#-#-#-#-#- PROGRAM STARTS #-#-#-#-#-#-
 
-# if [[ $0 != "./bashnotes.sh" && $0 != "bashnotes.sh" ]]; then
-#    echo "ERROR: Run bash notes in the BashNotes directory."
-#    exit
-# fi
+# Change directory to BashNotes
+script_dir=$(echo $0 | grep -o ".*/")
+cd $script_dir
 
 #-#-#-#-#-#-# PROCESS ARGS #-#-#-#-#-#-#
 #-# 
