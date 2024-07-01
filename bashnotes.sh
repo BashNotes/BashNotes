@@ -76,10 +76,6 @@ function nvim_notes {
 
 #-#-#-#-#-#- PROGRAM STARTS #-#-#-#-#-#-
 
-# Change directory to BashNotes
-script_dir=$(echo $0 | grep -o ".*/")
-cd $script_dir
-
 #-#-#-#-#-#-# PROCESS ARGS #-#-#-#-#-#-#
 #-# 
 #-# Enforce usage, first arguments required
@@ -141,6 +137,10 @@ if [[ ! -d $notes_dir/daily_notes ]]; then
    mkdir $notes_dir/daily_notes
 fi
 
+# Change directory to BashNotes/$notes_dir
+script_dir=$(echo $0 | grep -o ".*/")
+cd $script_dir/$notes_dir
+
 #-#-#-#-# CURRENT NOTES FILE #-#-#-#-#-#
 #-# 
 #-# If current notes don't already exist
@@ -152,13 +152,13 @@ fi
 #-#
 current_daily_notes=$(date -I)_$(date +%a).md
 
-if [[ ! -a $notes_dir/daily_notes/$current_daily_notes ]]; then
-   latest_filename=$(ls -rv $notes_dir/daily_notes | grep ".md" | head -n 1)
+if [[ ! -a daily_notes/$current_daily_notes ]]; then
+   latest_filename=$(ls -rv daily_notes | grep ".md" | head -n 1)
    if [[ -z $latest_filename ]]; then
-      echo  "Creating new notes file: " $notes_dir/daily_notes/$current_daily_notes "..."
-      touch $notes_dir/daily_notes/$current_daily_notes
+      echo  "Creating new notes file: " daily_notes/$current_daily_notes "..."
+      touch daily_notes/$current_daily_notes
    else 
-      cp $notes_dir/daily_notes/$latest_filename $notes_dir/daily_notes/$current_daily_notes
+      cp daily_notes/$latest_filename daily_notes/$current_daily_notes
    fi
 fi
 
@@ -168,7 +168,7 @@ fi
 #-# Check if notes existed from a previous day
 #-# If not, use current notes as previous notes
 #-# 
-previous_daily_notes=$(ls -rv $notes_dir/daily_notes/ | grep -m 2 ".md" | tail -n 1)
+previous_daily_notes=$(ls -rv daily_notes/ | grep -m 2 ".md" | tail -n 1)
 if [[ -z $previous_daily_notes ]]; then
    previous_daily_notes=$current_daily_notes
 fi
@@ -177,14 +177,14 @@ fi
 #-# 
 #-# Make all files read-only, except current notes
 #-# 
-chmod a-w $notes_dir/daily_notes/*
-chmod a+w $notes_dir/daily_notes/$current_daily_notes
+chmod a-w daily_notes/*
+chmod a+w daily_notes/$current_daily_notes
 
 #-#-#-#-#-#-# CREATE SYMLINKS #-#-#-#-#-#-#-#
 #-#
 #-# Go to notes directory and create symbolic links for current and previous notes
 #-#
-cd $notes_dir/daily_notes
+cd daily_notes
 rm .*.md || true # remove all previous symlinks
 current_daily_notes_symlink=.$current_daily_notes
 previous_daily_notes_symlink=.$previous_daily_notes
@@ -198,13 +198,13 @@ cd $OLDPWD
 #-# in the arguments
 #-#
 if [[ -n "$notes_program" ]]; then
-   $notes_program $notes_dir/daily_notes/$current_daily_notes_symlink $notes_dir/daily_notes/$previous_daily_notes_symlink
+   $notes_program daily_notes/$current_daily_notes_symlink daily_notes/$previous_daily_notes_symlink
 fi
 
 # Sync notes after changes
 if [[ -z $skip_git ]]; then
    git restore -q --staged .
-   git add $notes_dir
+   git add .
    git commit -m "$notes_dir synced at $(date -Im)" && echo "$notes_dir synced at $(date -Im)"
    if [[ -z "$offline" ]]; then
       git push origin $notes_dir
