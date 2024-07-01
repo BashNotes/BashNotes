@@ -76,10 +76,10 @@ function nvim_notes {
 
 #-#-#-#-#-#- PROGRAM STARTS #-#-#-#-#-#-
 
-if [[ $0 != "./bashnotes.sh" && $0 != "bashnotes.sh" ]]; then
-   echo "ERROR: Run bash notes in the BashNotes directory."
-   exit
-fi
+# if [[ $0 != "./bashnotes.sh" && $0 != "bashnotes.sh" ]]; then
+#    echo "ERROR: Run bash notes in the BashNotes directory."
+#    exit
+# fi
 
 #-#-#-#-#-#-# PROCESS ARGS #-#-#-#-#-#-#
 #-# 
@@ -113,7 +113,7 @@ done
 
 # Sync notes before changes
 if [[ -z $skip_git ]]; then
-   git checkout notes
+   git switch -q -C $notes_dir
    if [[ -z $offline ]]; then
       git pull -q origin notes
    fi
@@ -126,7 +126,7 @@ fi
 #-# 
 if [[ ! -d $notes_dir ]]; then
    echo "Creating notes directory: $notes_dir"
-   mkdir $notes_dir
+   mkdir -p $notes_dir
 fi
 echo "Using \""$notes_dir"\" as the notes directory."
 
@@ -201,6 +201,6 @@ if [[ -z $skip_git ]]; then
    git add $notes_dir
    git commit -m "$notes_dir synced at $(date -Im)" && echo "$notes_dir synced at $(date -Im)"
    if [[ -z "$offline" ]]; then
-      git push origin notes
+      git push origin $notes_dir
    fi
 fi
