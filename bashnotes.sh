@@ -88,6 +88,12 @@ function nvim_notes {
 #-#    Second argument is the setting to use when opening notes
 #-# 
 if [[ $# -lt 1 ]]; then
+   echo "ERROR: First argument must be the name of the desired notes directory."
+   usage
+   exit
+fi
+if [ ${1:0:1} == "-" ]; then # Check if the first character of the first argument is a '-'
+   echo "ERROR: First argument cannot be an option."
    usage
    exit
 fi
