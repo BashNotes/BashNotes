@@ -47,8 +47,8 @@ function usage {
 
 function nvim_diff {
    nvim -c "\
-   noremap <M-p> :w<Enter>:!./bashnotes personal_notes<Enter>
-   noremap <M-e> :w<Enter>:!./bashnotes effect_notes<Enter>
+   noremap <M-p> :w<Enter>:!~/BashNotes/bashnotes.sh personal_notes<Enter>
+   noremap <M-e> :w<Enter>:!~/BashNotes/bashnotes.sh effect_notes<Enter>
 
    set nonumber norelativenumber
    colorscheme peachpuff
