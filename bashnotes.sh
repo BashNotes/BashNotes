@@ -7,7 +7,8 @@ function usage {
       ./bashnotes NOTES_DIR [OPTIONS] [NOTES_PROGRAM]
 
    Options:
-      -o/--offline Skip pull and push of git repository
+      -o/--offline  Skip pull and push of git repository
+      -s/--skip-git Skip using git entirely
 
    Summary:
       A simple program that allows you to take
@@ -99,19 +100,25 @@ while [[ $# -gt 0 ]]; do
          offline="y"
          shift
          ;;
-      *)
-         notes_program=$1
+      -s|--skip-git)
+         skip_git="y"
          shift
+         ;;
+      *) # Assume everything after oftions is the notes program
+         notes_program=$@
+         break
          ;;
    esac
 done
 
 # Sync notes before changes
-git checkout notes
-if [[ -z $offline ]]; then
-   git pull -q origin notes
+if [[ -z $skip_git ]]; then
+   git checkout notes
+   if [[ -z $offline ]]; then
+      git pull -q origin notes
+   fi
+   git restore -q --staged .
 fi
-git restore -q --staged .
 
 #-#-#-#-#-# NOTES DIRECTORY #-#-#-#-#-#-
 #-# 
@@ -189,9 +196,11 @@ if [[ -n "$notes_program" ]]; then
 fi
 
 # Sync notes after changes
-git restore -q --staged .
-git add $notes_dir
-git commit -m "$notes_dir synced at $(date -Im)" && echo "$notes_dir synced at $(date -Im)"
-if [[ -z "$offline" ]]; then
-   git push origin notes
+if [[ -z $skip_git ]]; then
+   git restore -q --staged .
+   git add $notes_dir
+   git commit -m "$notes_dir synced at $(date -Im)" && echo "$notes_dir synced at $(date -Im)"
+   if [[ -z "$offline" ]]; then
+      git push origin notes
+   fi
 fi
