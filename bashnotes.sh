@@ -113,7 +113,7 @@ done
 
 # Sync notes before changes
 if [[ -z $skip_git ]]; then
-   git switch -q -C $notes_dir
+   git switch -q $notes_dir || git switch -q -c $notes_dir
    if [[ -z $offline ]]; then
       git pull -q origin notes
    fi
