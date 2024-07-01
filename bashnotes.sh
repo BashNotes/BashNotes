@@ -117,7 +117,8 @@ if [[ -z $skip_git ]]; then
    if [[ -z $offline ]]; then
       git pull -q origin notes
    fi
-   git restore -q --staged .
+   git restore -q --staged . # Unstage staged changes in the BashNotes directory
+   git merge -q --no-edit main
 fi
 
 #-#-#-#-#-# NOTES DIRECTORY #-#-#-#-#-#-
