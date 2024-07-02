@@ -45,32 +45,30 @@ function usage {
 #-#    Second tab is a diff of previous and current notes.
 #-#
 
+nvim_notes_config="
+set nonumber norelativenumber
+colorscheme peachpuff
+
+noremap <M-p> :w<Enter>:!~/BashNotes/bashnotes.sh personal_notes<Enter>
+noremap <M-e> :w<Enter>:!~/BashNotes/bashnotes.sh effect_notes<Enter>
+"
+
+function nvim_notes {
+   nvim -c "\
+   $nvim_notes_config
+   edit $1
+   "
+}
+
 function nvim_diff {
    nvim -c "\
-   noremap <M-p> :w<Enter>:!~/BashNotes/bashnotes.sh personal_notes<Enter>
-   noremap <M-e> :w<Enter>:!~/BashNotes/bashnotes.sh effect_notes<Enter>
-
-   set nonumber norelativenumber
-   colorscheme peachpuff
-
+   $nvim_notes_config
    edit $1
 
    tab split $2
    vert diffsplit $1
    wincmd h
    tabnext 1
-   "
-}
-
-function nvim_notes {
-   nvim -c "\
-   noremap <M-p> :w<Enter>:!./bashnotes.sh personal_notes<Enter>
-   noremap <M-e> :w<Enter>:!./bashnotes.sh effect_notes<Enter>
-
-   set nonumber norelativenumber
-   colorscheme peachpuff
-
-   edit $1
    "
 }
 
