@@ -210,3 +210,6 @@ if [[ -z $skip_git ]]; then
       echo "https://github.com/Miyelsh/BashNotes/tree/$notes_dir/$notes_dir"
    fi
 fi
+
+# Generate a tags file in notes_dir, containing references to headers and filenames
+ctags -R --extras=* --fields=*
