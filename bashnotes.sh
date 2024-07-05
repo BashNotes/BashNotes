@@ -199,6 +199,9 @@ if [[ -n "$notes_program" ]]; then
    $notes_program daily_notes/$current_daily_notes_symlink daily_notes/$previous_daily_notes_symlink
 fi
 
+# Generate a tags file in notes_dir, containing references to headers and filenames
+ctags -R --extras=* --fields=* --exclude=.*
+
 # Sync notes after changes
 if [[ -z $skip_git ]]; then
    git restore -q --staged .
@@ -210,6 +213,3 @@ if [[ -z $skip_git ]]; then
       echo "https://github.com/Miyelsh/BashNotes/tree/$notes_dir/$notes_dir"
    fi
 fi
-
-# Generate a tags file in notes_dir, containing references to headers and filenames
-ctags -R --extras=* --fields=*
