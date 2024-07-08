@@ -93,6 +93,9 @@ fi
 notes_dir=$1
 shift
 
+shared_notes_dir="shared_notes"
+notes_branch="notes"
+
 while [[ $# -gt 0 ]]; do
    case $1 in
       -o|--offline)
@@ -112,9 +115,10 @@ done
 
 # Sync notes before changes
 if [[ -z $skip_git ]]; then
-   git switch -q $notes_dir || git switch -q -c $notes_dir
+   git branch -q $notes_branch >& /dev/null || true
+   git switch -q $notes_branch
    if [[ -z $offline ]]; then
-      git pull -q origin $notes_dir
+      git pull -q origin $notes_branch
    fi
    git restore -q --staged . # Unstage staged changes in the BashNotes directory
    git merge -q --no-edit main
@@ -129,6 +133,12 @@ if [[ ! -d $notes_dir ]]; then
    mkdir -p $notes_dir
 fi
 echo "Using \""$notes_dir"\" as the notes directory."
+
+if [[ ! -d $shared_notes_dir ]]; then
+   echo "Creating shared notes directory: $shared_notes_dir"
+   mkdir -p $shared_notes_dir
+fi
+echo "Using \""$shared_notes_dir"\" as the notes directory."
 
 if [[ ! -d $notes_dir/daily_notes ]]; then
    echo "Creating daily_notes directory: $notes_dir/daily_notes"
@@ -206,10 +216,11 @@ ctags -R --extras=* --fields=* --exclude=.*
 if [[ -z $skip_git ]]; then
    git restore -q --staged .
    git add .
-   git commit -m "$notes_dir synced at $(date -Im)" && echo "$notes_dir synced at $(date -Im)"
+   git add ../$shared_notes_dir
+   git commit -m "$notes_dir and $shared_notes_dir synced at $(date -Im)" && echo "$notes_dir synced at $(date -Im)"
    if [[ -z "$offline" ]]; then
-      git push origin $notes_dir
+      git push origin $notes_branch
       # Print a link to the notes link in Github (TODO: Generalize to any user)
-      echo "https://github.com/Miyelsh/BashNotes/tree/$notes_dir/$notes_dir"
+      echo "https://github.com/Miyelsh/BashNotes/tree/$notes_branch/$notes_dir"
    fi
 fi
