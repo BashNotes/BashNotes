@@ -51,12 +51,17 @@ colorscheme peachpuff
 
 noremap <M-p> :w<Enter>:!~/BashNotes/bashnotes.sh personal_notes<Enter>
 noremap <M-e> :w<Enter>:!~/BashNotes/bashnotes.sh effect_notes<Enter>
+
+edit shared_notes/weekly_planner.md
+tab split
 "
 
 function nvim_notes {
    nvim -c "\
    $nvim_notes_config
+
    edit $1
+   tabnext 2
    "
 }
 
@@ -68,7 +73,7 @@ function nvim_diff {
    tab split $2
    vert diffsplit $1
    wincmd h
-   tabnext 1
+   tabnext 2 
    "
 }
 
@@ -145,9 +150,9 @@ if [[ ! -d $notes_dir/daily_notes ]]; then
    mkdir $notes_dir/daily_notes
 fi
 
-# Change directory to BashNotes/$notes_dir
+# Change directory to BashNotes
 script_dir=$(echo $0 | grep -o ".*/")
-cd $script_dir/$notes_dir
+cd $script_dir
 
 #-#-#-#-# CURRENT NOTES FILE #-#-#-#-#-#
 #-# 
@@ -160,13 +165,13 @@ cd $script_dir/$notes_dir
 #-#
 current_daily_notes=$(date -I)_$(date +%a).md
 
-if [[ ! -a daily_notes/$current_daily_notes ]]; then
-   latest_filename=$(ls -rv daily_notes | grep ".md" | head -n 1)
+if [[ ! -a $notes_dir/daily_notes/$current_daily_notes ]]; then
+   latest_filename=$(ls -rv $notes_dir/daily_notes | grep ".md" | head -n 1)
    if [[ -z $latest_filename ]]; then
       echo  "Creating new notes file: " daily_notes/$current_daily_notes "..."
-      touch daily_notes/$current_daily_notes
+      touch $notes_dir/daily_notes/$current_daily_notes
    else 
-      cp daily_notes/$latest_filename daily_notes/$current_daily_notes
+      cp $notes_dir/daily_notes/$latest_filename $notes_dir/daily_notes/$current_daily_notes
    fi
 fi
 
@@ -176,7 +181,7 @@ fi
 #-# Check if notes existed from a previous day
 #-# If not, use current notes as previous notes
 #-# 
-previous_daily_notes=$(ls -rv daily_notes/ | grep -m 2 ".md" | tail -n 1)
+previous_daily_notes=$(ls -rv $notes_dir/daily_notes/ | grep -m 2 ".md" | tail -n 1)
 if [[ -z $previous_daily_notes ]]; then
    previous_daily_notes=$current_daily_notes
 fi
@@ -185,14 +190,14 @@ fi
 #-# 
 #-# Make all files read-only, except current notes
 #-# 
-chmod a-w daily_notes/*
-chmod a+w daily_notes/$current_daily_notes
+chmod a-w $notes_dir/daily_notes/*
+chmod a+w $notes_dir/daily_notes/$current_daily_notes
 
 #-#-#-#-#-#-# CREATE SYMLINKS #-#-#-#-#-#-#-#
 #-#
 #-# Go to notes directory and create symbolic links for current and previous notes
 #-#
-cd daily_notes
+cd $notes_dir/daily_notes
 rm .*.md || true # remove all previous symlinks
 current_daily_notes_symlink=.$current_daily_notes
 previous_daily_notes_symlink=.$previous_daily_notes
@@ -206,17 +211,17 @@ cd $OLDPWD
 #-# in the arguments
 #-#
 if [[ -n "$notes_program" ]]; then
-   $notes_program daily_notes/$current_daily_notes_symlink daily_notes/$previous_daily_notes_symlink
+   $notes_program $notes_dir/daily_notes/$current_daily_notes_symlink $notes_dir/daily_notes/$previous_daily_notes_symlink
 fi
 
 # Generate a tags file in notes_dir, containing references to headers and filenames
-ctags -R --extras=* --fields=* --exclude=.*
+ctags -R --extras=* --fields=* --exclude=.* -f $notes_dir/tags $notes_dir
 
 # Sync notes after changes
 if [[ -z $skip_git ]]; then
    git restore -q --staged .
-   git add .
-   git add ../$shared_notes_dir
+   git add $notes_dir
+   git add $shared_notes_dir
    git commit -m "$notes_dir and $shared_notes_dir synced at $(date -Im)" && echo "$notes_dir synced at $(date -Im)"
    if [[ -z "$offline" ]]; then
       git push origin $notes_branch
