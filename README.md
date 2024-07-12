@@ -65,7 +65,7 @@ cd BashNotes
 ```
 git clone git@github.com:BashNotes/BashNotes.git
 cd BashNotes
-./bashnotes.sh notes_dir  --offline vim # You can't push your branch to BashNotes/BashNotes
+./bashnotes.sh notes_dir --offline vim # You can't push your branch to BashNotes/BashNotes
 ```
 
 ### Option 3: Download Zip and use with or without git
