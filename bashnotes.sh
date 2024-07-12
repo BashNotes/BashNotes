@@ -193,25 +193,13 @@ fi
 chmod a-w $notes_dir/daily_notes/*
 chmod a+w $notes_dir/daily_notes/$current_daily_notes
 
-#-#-#-#-#-#-# CREATE SYMLINKS #-#-#-#-#-#-#-#
-#-#
-#-# Go to notes directory and create symbolic links for current and previous notes
-#-#
-cd $notes_dir/daily_notes
-rm .*.md || true # remove all previous symlinks
-current_daily_notes_symlink=.$current_daily_notes
-previous_daily_notes_symlink=.$previous_daily_notes
-ln -f -s $current_daily_notes  $current_daily_notes_symlink
-ln -f -s $previous_daily_notes $previous_daily_notes_symlink
-cd $OLDPWD
-
 #-#-#-#-#-#-# OPEN NOTES #-#-#-#-#-#-#-#
 #-#
 #-# Run the notes_program specified
 #-# in the arguments
 #-#
 if [[ -n "$notes_program" ]]; then
-   $notes_program $notes_dir/daily_notes/$current_daily_notes_symlink $notes_dir/daily_notes/$previous_daily_notes_symlink
+   $notes_program $notes_dir/daily_notes/$current_daily_notes $notes_dir/daily_notes/$previous_daily_notes
 fi
 
 # Generate a tags file in notes_dir, containing references to headers and filenames
