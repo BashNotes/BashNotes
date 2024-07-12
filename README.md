@@ -5,26 +5,22 @@ A simple program that allows you to take notes in your preferred text editor.
 
 New daily notes are created automatically and copy contents from the previous day.
 
-Argument 1: The directory where the notes are/will be located.
-
-Argument 2: The program that the notes will be edited (vim, gedit, emacs, etc.).
-
-If argument 2 is not provided, Bashnotes will sync but not open an editor.
-
-A simple program that allows you to take notes in your preferred text editor.
-
-New daily notes are automatically created and copy contents from the previous day.
-
 Cloning this repository allows you to use git as a version control offline.
 
 Forking this repository to a private allows you to use GitHub (or whatever you prefer) to host the notes in a repository, viewable and editable anywhere.
 
 If you prefer, you can simply use this program to create daily notes, but ignore the git/GitHub integration entirely.
 
+
+
 ## Usage
 ```
    Usage:
       ./bashnotes NOTES_DIR [OPTIONS] [NOTES_PROGRAM]
+
+   Argument 1: The directory where the notes are/will be located.
+   Argument 2: The program that the notes will be edited (vim, gedit, emacs, etc.).
+   If argument 2 is not provided, Bashnotes will sync but not open an editor.
 
    Options:
       -o/--offline  Skip pull and push of git repository
