@@ -15,33 +15,33 @@ If you prefer, you can simply use this program to create daily notes, but ignore
 
 ## Usage
 ```
-   Usage:
-      ./bashnotes NOTES_DIR [OPTIONS] [NOTES_PROGRAM]
+    Usage:
+        ./bashnotes NOTES_DIR [OPTIONS] [NOTES_PROGRAM]
 
-   Argument 1: The directory where the notes are/will be located.
-   Argument 2: The program that the notes will be edited (vim, gedit, emacs, etc.).
-   If argument 2 is not provided, Bashnotes will sync but not open an editor.
+    Argument 1: The directory where the notes are/will be located.
+    Argument 2: The program that the notes will be edited (vim, gedit, emacs, etc.).
+    If argument 2 is not provided, Bashnotes will sync but not open an editor.
 
-   Options:
-      -o/--offline  Skip pull and push of git repository
-      -s/--skip-git Skip using git entirely
+    Options:
+        -o/--offline  Skip pull and push of git repository
+        -s/--skip-git Skip using git entirely
 
-   Included Notes Programs
-      nvim_notes: Open neovim with peachpuff color scheme 
-         and a weekly planner.
-      nvim_diff: Open neovim with peachpuff color scheme,
-         a weekly planner, and a diff with the previous day.
+    Included Notes Programs
+        nvim_notes: Open neovim with peachpuff color scheme 
+            and a weekly planner.
+        nvim_diff: Open neovim with peachpuff color scheme,
+            a weekly planner, and a diff with the previous day.
 
-   Add your own notes program with aliases or bash functions.
-   For instance:
-   alias vim_notes="vim -c \"set nonumber norelativenumber\""
-   ./bashnotes notes_dir vim_notes
+    Add your own notes program with aliases or bash functions.
+    For instance:
+        alias vim_notes="vim -c \"set nonumber norelativenumber\""
+        ./bashnotes notes_dir vim_notes
 
-   Examples:
-      ./bashnotes work_notes vim
-      ./bashnotes evil_notes emacs
-      ./bashnotes notes_directory --skip-git nvim_diff
-      ./bashnotes notes_directory --offline nvim_notes
+    Examples:
+        ./bashnotes work_notes vim
+        ./bashnotes evil_notes emacs
+        ./bashnotes notes_directory --skip-git nvim_diff
+        ./bashnotes notes_directory --offline nvim_notes
 ```
 
 ## Installation and Usage
