@@ -218,7 +218,6 @@ for file in $(find $notes_dir -name "*.md"); do
     # Test if the file already has a header
     file_has_header=false
     for file_with_headers in $files_with_headers; do
-        echo $file_with_headers
         if [ "$file" == "$file_with_headers" ]; then
             file_has_header=true
             continue
