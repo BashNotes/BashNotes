@@ -212,12 +212,34 @@ if [[ -z $previous_daily_notes ]]; then
    previous_daily_notes=$current_daily_notes
 fi
 
-#-#-#-#-#-# SET PERMISSIONS #-#-#-#-#-#-
-#-# 
-#-# Make all files read-only, except current notes
-#-# 
-chmod a-w $notes_dir/daily_notes/*
-chmod a+w $notes_dir/daily_notes/$current_daily_notes
+# Add headers to files with a link to the file
+files_with_headers=$(grep -rle '^# \[.*\]\(.*\.md\)' $notes_dir) || true
+for file in $(find $notes_dir -name "*.md"); do
+    # Test if the file already has a header
+    file_has_header=false
+    for file_with_headers in $files_with_headers; do
+        echo $file_with_headers
+        if [ "$file" == "$file_with_headers" ]; then
+            file_has_header=true
+            continue
+        fi
+    done
+    
+    # If the file doesn't already have a header, create one
+    if [[ $file_has_header == false ]]; then
+        title=$(echo $file | sed "s/^.*\///"     \
+                           | sed "s/.md$//"      \
+                           | sed "s/_/ /g"       \
+                           | sed -r "s/\<./\U&/g") # Capitalize first letters
+        echo "# [$title](/$file)" > header.tmp
+        cp $file file.tmp
+        cat header.tmp file.tmp > $file
+        rm header.tmp file.tmp
+    fi
+done
+
+# Generate a tags file in notes_dir, containing references to headers and filenames
+ctags -R --extras=* --fields=* --exclude=.* -f $notes_dir/tags $notes_dir
 
 #-#-#-#-#-#-# OPEN NOTES #-#-#-#-#-#-#-#
 #-#
@@ -225,11 +247,9 @@ chmod a+w $notes_dir/daily_notes/$current_daily_notes
 #-# in the arguments
 #-#
 if [[ -n "$notes_program" ]]; then
-   $notes_program $notes_dir/daily_notes/$current_daily_notes $notes_dir/daily_notes/$previous_daily_notes
+    $notes_program $notes_dir/daily_notes/$current_daily_notes $notes_dir/daily_notes/$previous_daily_notes
 fi
 
-# Generate a tags file in notes_dir, containing references to headers and filenames
-ctags -R --extras=* --fields=* --exclude=.* -f $notes_dir/tags $notes_dir
 
 # Sync notes after changes
 if [[ -z $skip_git ]]; then
