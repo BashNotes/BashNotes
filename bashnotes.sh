@@ -197,7 +197,7 @@ if [[ ! -a $notes_dir/daily_notes/$current_daily_notes ]]; then
         echo  "Creating new notes file: " daily_notes/$current_daily_notes "..."
         touch $notes_dir/daily_notes/$current_daily_notes
     else 
-        cp $notes_dir/daily_notes/$latest_filename $notes_dir/daily_notes/$current_daily_notes
+        tail -n +2 $notes_dir/daily_notes/$latest_filename > $notes_dir/daily_notes/$current_daily_notes
     fi
 fi
 
