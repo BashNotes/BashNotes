@@ -177,8 +177,10 @@ if [[ ! -d $notes_dir/daily_notes ]]; then
 fi
 
 # Change directory to BashNotes
-script_dir=$(echo $0 | grep -o ".*/")
-cd $script_dir
+if [[ $0 != "bashnotes.sh" ]]; then
+    script_dir=$(echo $0 | grep -o ".*/")
+    cd $script_dir
+fi
 
 #-#-#-#-# CURRENT NOTES FILE #-#-#-#-#-#
 #-# 
