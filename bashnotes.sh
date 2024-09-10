@@ -240,26 +240,26 @@ for file in $(find $notes_dir -name "*.md"); do
 done
 
 # Create .html files for each .md file
-mkdir $notes_dir/html || true
-cd $notes_dir
 for md_file in $(find -name "*.md"); do
-    html_file=$(echo html/$md_file | sed "s/\.md/.html/")
-
+    # Prepend html to .md filename and replace with .html
+    html_file=$(echo "html/$md_file" | sed "s/\.md/.html/")
     # If the md file doesn't exist, make the html file
     if [[ ! -f $html_file ]]; then
         # Make the subdirectory first
         mkdir -p $html_file
         rmdir $html_file
+        # Make the file using pandoc
         pandoc -o $html_file $md_file
-    else # If the html file does exist and is older than the md file
+    else # If the html file does exist
         md_file_date=$(date +%s -r $md_file)
         html_file_date=$(date +%s -r $html_file)
+        # If the .md file is newer than the .html file
         if [[ $html_file_date -lt $md_file_date ]]; then
+            # Make the file using pandoc
             pandoc -o $html_file $md_file
         fi
     fi
 done
-cd -
 
 # Generate a tags file in $notes_dir, containing references to headers and filenames
 ctags -R --extras=* --fields=* --exclude=.* -f $notes_dir/tags $notes_dir
