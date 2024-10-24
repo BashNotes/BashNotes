@@ -169,7 +169,7 @@ if [[ ! -d $shared_notes_dir ]]; then
     echo "Creating shared notes directory: $shared_notes_dir"
     mkdir -p $shared_notes_dir
 fi
-echo "Using \""$shared_notes_dir"\" as the notes directory."
+echo "Using \""$shared_notes_dir"\" as the shared notes directory."
 
 if [[ ! -d $notes_dir/daily_notes ]]; then
     echo "Creating daily_notes directory: $notes_dir/daily_notes"
